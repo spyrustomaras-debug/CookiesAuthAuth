@@ -60,6 +60,21 @@ export const createWorkerProject = createAsyncThunk<
   }
 });
 
+// Async thunk to update project status
+export const updateProjectStatus = createAsyncThunk<
+  Project,
+  { projectId: number; status: string },
+  { state: RootState }
+>("workerProjects/updateProjectStatus", async ({ projectId, status }, { rejectWithValue }) => {
+  try {
+    const response = await axiosInstance.patch(`/api/projects/${projectId}/update_status/`, { status });
+    return response.data;
+  } catch (err: any) {
+    return rejectWithValue(err.response?.data || "Failed to update project status");
+  }
+});
+
+
 const workerProjectSlice = createSlice({
   name: "workerProjects",
   initialState,
@@ -93,6 +108,11 @@ const workerProjectSlice = createSlice({
       .addCase(createWorkerProject.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload as string;
+      })
+
+      .addCase(updateProjectStatus.fulfilled, (state, action: PayloadAction<Project>) => {
+        const index = state.projects.findIndex(p => p.id === action.payload.id);
+        if (index !== -1) state.projects[index] = action.payload;
       });
   },
 });

@@ -16,6 +16,7 @@ const LoginPage: React.FC = () => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!username || !password) return;
+    console.log(username, password)
     dispatch(login({ username, password }));
   };
 
@@ -28,6 +29,14 @@ const LoginPage: React.FC = () => {
       }
     }
   }, [user, navigate]);
+
+  // Helper to extract error message safely
+  const getErrorMessage = (err: any) => {
+    if (!err) return null;
+    if (typeof err === "string") return err;
+    if (err.detail) return err.detail;
+    return JSON.stringify(err);
+  };
 
   return (
     <div className="login-container">
@@ -64,7 +73,8 @@ const LoginPage: React.FC = () => {
           {loading ? "Logging in..." : "Login"}
         </button>
 
-        {error && <p className="error-text">{error}</p>}
+        {/* Display API error */}
+        {error && <p className="error-text">{getErrorMessage(error)}</p>}
       </form>
     </div>
   );

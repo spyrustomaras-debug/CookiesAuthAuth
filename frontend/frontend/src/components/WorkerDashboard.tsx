@@ -5,6 +5,7 @@ import {
   createWorkerProject,
   selectWorkerProjects,
   selectWorkerProjectsLoading,
+  updateProjectStatus,
 } from "../features/projects/workerProjectSlice";
 import { logout } from "../features/auth/authSlice";
 import { useNavigate } from "react-router-dom";
@@ -110,6 +111,38 @@ const WorkerDashboard: React.FC = () => {
                   <p className={`project-status ${p.status.toLowerCase()}`}>
                     <strong>Status:</strong> {p.status}
                   </p>
+                   {p.status === "COMPLETED" && (
+                    <button
+                        className="status-btn completed"
+                        onClick={() =>
+                        dispatch(updateProjectStatus({ projectId: p.id, status: "IN_PROGRESS" }))
+                        }
+                    >
+                        Mark as In Progress
+                    </button>
+                    )}
+
+                    {p.status === "IN_PROGRESS" && (
+                    <button
+                        className="status-btn in-progress"
+                        onClick={() =>
+                        dispatch(updateProjectStatus({ projectId: p.id, status: "COMPLETED" }))
+                        }
+                    >
+                        Mark as Completed
+                    </button>
+                    )}
+
+                    {p.status === "PENDING" && (
+                    <button
+                        className="status-btn pending"
+                        onClick={() =>
+                        dispatch(updateProjectStatus({ projectId: p.id, status: "IN_PROGRESS" }))
+                        }
+                    >
+                        Start Project
+                    </button>
+                    )}
                 </div>
               ))}
             </div>
