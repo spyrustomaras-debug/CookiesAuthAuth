@@ -1,34 +1,52 @@
-import React from "react";
-import { useAppDispatch } from "../features/auth/hook";
+import React, { useEffect } from "react";
+import { useAppDispatch, useAppSelector } from "../features/auth/hook";
+import { fetchWorkerProjects, selectWorkerProjects, selectWorkerProjectsLoading } from "../features/projects/workerProjectSlice";
 import { logout } from "../features/auth/authSlice";
 import { useNavigate } from "react-router-dom";
-import "./Dashboard.css"; // 👈 optional CSS file
+import "./Dashboard.css";
 
 const WorkerDashboard: React.FC = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
+  const projects = useAppSelector(selectWorkerProjects);
+  console.log("projects",projects)
+  const loading = useAppSelector(selectWorkerProjectsLoading);
+
+  useEffect(() => {
+    dispatch(fetchWorkerProjects());
+  }, [dispatch]);
+
   const handleLogout = () => {
     dispatch(logout());
-    navigate("/login"); // redirect to login page after logout
+    navigate("/login");
   };
 
   return (
     <div className="dashboard-container">
-      {/* Header */}
       <header className="dashboard-header">
         <h1 className="dashboard-title">Worker Dashboard</h1>
-        <button className="logout-btn" onClick={handleLogout}>
-          Logout
-        </button>
+        <button className="logout-btn" onClick={handleLogout}>Logout</button>
       </header>
 
-      {/* Main content */}
       <main className="dashboard-content">
-        <p>Welcome, Worker! 🎉</p>
+        <h2>Your Projects</h2>
+        {loading ? (
+  <p>Loading projects...</p>
+        ) : projects.length > 0 ? (
+        <ul>
+            {projects.map((p) => (
+            <li key={p.worker.id}>{p.worker.username} - {p.worker.email}</li>
+            ))}
+        </ul>
+        ) : (
+        <p>No projects assigned yet.</p>
+        )}
       </main>
     </div>
   );
 };
 
 export default WorkerDashboard;
+
+
