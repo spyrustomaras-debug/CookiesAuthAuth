@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axiosInstance from "../../api/axios";
+import * as Sentry from "@sentry/react";
 
 interface User {
   id: number;

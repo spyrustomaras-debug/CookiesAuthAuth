@@ -3,20 +3,26 @@ import { useAppDispatch, useAppSelector } from "../features/auth/hook";
 import { login } from "../features/auth/authSlice";
 import { useNavigate } from "react-router-dom";
 import "./LoginPage.css"; // 👈 import the CSS file here
+import { setError, clearError } from "../features/error/errorSlice";
+
 
 const LoginPage: React.FC = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const { user, loading, error } = useAppSelector((state) => state.auth);
+  const errorMessage = useAppSelector((state) => state.error.message);
 
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [touched, setTouched] = useState({ username: false, password: false });
 
   const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!username || !password) return;
-    console.log(username, password)
+     e.preventDefault();
+    if (username.length < 3 || password.length < 3) {
+      dispatch(setError("Username and password must be at least 3 characters long"));
+      return;
+    }
+    dispatch(clearError());
     dispatch(login({ username, password }));
   };
 
@@ -74,8 +80,9 @@ const LoginPage: React.FC = () => {
         </button>
 
         {/* Display API error */}
-        {error && <p className="error-text">{getErrorMessage(error)}</p>}
-      </form>
+        {/* Show centralized error */}
+        {errorMessage && <p className="error-text">{errorMessage}</p>}      
+    </form>
     </div>
   );
 };
