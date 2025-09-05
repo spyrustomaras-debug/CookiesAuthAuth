@@ -27,9 +27,13 @@ class UserSerializer(serializers.ModelSerializer):
         fields = ("id", "username", "email", "role")
 
 class ProjectSerializer(serializers.ModelSerializer):
+    worker = UserSerializer(read_only=True)  # nested worker info
+
     class Meta:
         model = Project
-        fields = "__all__"
+        fields = ["id", "name", "description", "status", "worker"]
+        read_only_fields = ["worker"]  # worker is set automatically
+
 
 class WorkerRegisterSerializer(serializers.ModelSerializer):
     class Meta:

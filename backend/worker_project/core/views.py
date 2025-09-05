@@ -2,17 +2,37 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.response import Response
 from rest_framework import generics, status
 from .serializers import WorkerRegisterSerializer, AdminRegisterSerializer, UserSerializer, ProjectSerializer
-from .models import User
+from .models import User, Project
 from rest_framework import viewsets, permissions
 from rest_framework.decorators import action
 from .serializers import MyTokenObtainPairSerializer
 from rest_framework_simplejwt.views import TokenObtainPairView
+from rest_framework.views import APIView
 
 # Custom permission: only workers can create projects
 class IsWorker(permissions.BasePermission):
     def has_permission(self, request, view):
         return request.user.is_authenticated and request.user.role == "WORKER"
 
+class IsAdmin(permissions.BasePermission):
+    def has_permission(self, request, view):
+        return request.user.is_authenticated and request.user.role == "ADMIN"
+    
+class AdminWorkersProjectsView(APIView):
+    permission_classes = [IsAdmin]
+    
+    def get(self, request):
+        workers = User.objects.filter(role="WORKER")
+        data = []
+        for worker in workers:
+            projects = Project.objects.filter(worker=worker)
+            serialized_projects = ProjectSerializer(projects, many=True).data
+            data.append({
+                "worker": UserSerializer(worker).data,
+                "projects": serialized_projects if serialized_projects else []  # ensures empty list if no projects
+            })
+        return Response(data, status=status.HTTP_200_OK)
+    
 class ProjectViewSet(viewsets.ModelViewSet):
     serializer_class = ProjectSerializer
     permission_classes = [permissions.IsAuthenticated]
@@ -41,6 +61,7 @@ class ProjectViewSet(viewsets.ModelViewSet):
         project.save()
         serializer = self.get_serializer(project)
         return Response(serializer.data)
+    
 # Worker Register
 class WorkerRegisterView(generics.CreateAPIView):
     serializer_class = WorkerRegisterSerializer
