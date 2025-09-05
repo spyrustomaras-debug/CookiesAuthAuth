@@ -9,11 +9,13 @@ import AdminDashboard from "./components/AdminDashboard";
 import ProtectedRoute from "./components/ProtectedRoute";
 import * as Sentry from "@sentry/react";
 import ErrorFallback from "./components/ErrorFallback";
+import useIdleLogout from "./hooks/useIdleLogout";
 
 
 const App: React.FC = () => {
   const dispatch = useAppDispatch();
-  
+    useIdleLogout(); // enable auto-logout
+
   useEffect(() => {
     dispatch(restoreLogin()); // restore login on page load
   }, [dispatch]);
