@@ -46,6 +46,20 @@ export const fetchWorkerProjects = createAsyncThunk<
   }
 });
 
+// Create project thunk
+export const createWorkerProject = createAsyncThunk<
+  Project,
+  { name: string; description: string },
+  { state: RootState }
+>("workerProjects/createWorkerProject", async (projectData, { rejectWithValue }) => {
+  try {
+    const response = await axiosInstance.post("/api/projects/", projectData);
+    return response.data;
+  } catch (err: any) {
+    return rejectWithValue(err.response?.data || "Failed to create project");
+  }
+});
+
 const workerProjectSlice = createSlice({
   name: "workerProjects",
   initialState,
@@ -63,6 +77,20 @@ const workerProjectSlice = createSlice({
         console.log(state.projects)
       })
       .addCase(fetchWorkerProjects.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as string;
+      })
+
+      // Create project
+      .addCase(createWorkerProject.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(createWorkerProject.fulfilled, (state, action: PayloadAction<Project>) => {
+        state.loading = false;
+        state.projects.push(action.payload); // add newly created project to state
+      })
+      .addCase(createWorkerProject.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload as string;
       });
