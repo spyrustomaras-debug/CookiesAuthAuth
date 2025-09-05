@@ -10,7 +10,6 @@ const WorkerDashboard: React.FC = () => {
   const navigate = useNavigate();
 
   const projects = useAppSelector(selectWorkerProjects);
-  console.log("projects",projects)
   const loading = useAppSelector(selectWorkerProjectsLoading);
 
   useEffect(() => {
@@ -32,15 +31,26 @@ const WorkerDashboard: React.FC = () => {
       <main className="dashboard-content">
         <h2>Your Projects</h2>
         {loading ? (
-  <p>Loading projects...</p>
+          <p>Loading projects...</p>
         ) : projects.length > 0 ? (
-        <ul>
+          <div className="projects-grid">
             {projects.map((p) => (
-            <li key={p.worker.id}>{p.worker.username} - {p.worker.email}</li>
+              <div key={p.id} className="project-card">
+                <h3 className="project-title">{p.name}</h3>
+                <p className="project-worker">
+                  <strong>Worker:</strong> {p.worker.username} ({p.worker.email})
+                </p>
+                <p className="project-description">
+                  <strong>Description:</strong> {p.description}
+                </p>
+                <p className={`project-status ${p.status.toLowerCase()}`}>
+                  <strong>Status:</strong> {p.status}
+                </p>
+              </div>
             ))}
-        </ul>
+          </div>
         ) : (
-        <p>No projects assigned yet.</p>
+          <p>No projects assigned yet.</p>
         )}
       </main>
     </div>
@@ -48,5 +58,3 @@ const WorkerDashboard: React.FC = () => {
 };
 
 export default WorkerDashboard;
-
-

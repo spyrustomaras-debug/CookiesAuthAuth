@@ -32,13 +32,17 @@ const AdminDashboard: React.FC = () => {
             <div key={worker.id}>
               <h2>{worker.username}</h2>
               {projects.length > 0 ? (
-                <ul>
-                  {projects.map((project) => (
-                    <li key={project.id}>
-                      {project.name} - {project.status}
-                    </li>
-                  ))}
-                </ul>
+               <div className="projects-list">
+                    {projects.map((project) => (
+                        <div key={project.id} className="project-item">
+                        <h3 className="project-name">{project.name}</h3>
+                        <p className={`project-status ${project.status.toLowerCase()}`}>
+                            Status: {project.status}
+                        </p>
+                        <p className="project-description">{project.description}</p>
+                        </div>
+                    ))}
+                </div>
               ) : (
                 <p>No projects</p>
               )}

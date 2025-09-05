@@ -1,46 +1,196 @@
 .dashboard-container {
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  background: #f4f6f9;
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 1rem;
   font-family: Arial, sans-serif;
 }
 
-/* Header styles */
 .dashboard-header {
   display: flex;
-  justify-content: space-between; /* title left, logout right */
+  justify-content: space-between;
   align-items: center;
-  padding: 15px 20px;
-  background: #007bff;
-  color: white;
+  margin-bottom: 2rem;
 }
 
 .dashboard-title {
-  margin: 0;
-  font-size: 20px;
-  font-weight: 600;
+  font-size: 2rem;
 }
 
-/* Logout button */
 .logout-btn {
-  background: white;
-  color: #007bff;
+  padding: 0.5rem 1rem;
+  background-color: #ef4444; /* red */
+  color: #fff;
   border: none;
-  padding: 8px 14px;
-  font-size: 14px;
   border-radius: 6px;
   cursor: pointer;
-  transition: background 0.3s, color 0.3s;
 }
 
 .logout-btn:hover {
-  background: #0056b3;
-  color: white;
+  background-color: #b91c1c;
 }
 
-/* Main content */
-.dashboard-content {
-  flex: 1;
-  padding: 20px;
+.projects-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1rem;
+}
+
+.project-card {
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 1rem;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  transition: box-shadow 0.3s ease;
+}
+
+.project-card:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.project-title {
+  font-size: 1.2rem;
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+}
+
+.project-worker,
+.project-description {
+  font-size: 0.95rem;
+  color: #555;
+  margin-bottom: 0.5rem;
+}
+
+.project-status {
+  font-weight: bold;
+}
+
+/* Status colors */
+.project-status.pending {
+  color: #d97706; /* amber/yellow */
+}
+
+.project-status.in_progress {
+  color: #3b82f6; /* blue */
+}
+
+.project-status.completed {
+  color: #16a34a; /* green */
+}
+
+
+.projects-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1.5rem;
+  margin-top: 1rem;
+}
+
+.project-card {
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  padding: 1.2rem;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.project-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 6px 14px rgba(0,0,0,0.2);
+}
+
+.project-title {
+  font-size: 1.3rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.project-worker,
+.project-description {
+  font-size: 0.95rem;
+  color: #555;
+  margin-bottom: 0.4rem;
+}
+
+.project-status {
+  font-weight: 600;
+  padding: 0.3rem 0.5rem;
+  border-radius: 5px;
+  display: inline-block;
+}
+
+/* Status colors */
+.project-status.pending {
+  background-color: #fef3c7; /* light amber */
+  color: #b45309; /* dark amber */
+}
+
+.project-status.in_progress {
+  background-color: #dbeafe; /* light blue */
+  color: #1d4ed8; /* dark blue */
+}
+
+.project-status.completed {
+  background-color: #dcfce7; /* light green */
+  color: #15803d; /* dark green */
+}
+
+.projects-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.project-item {
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 12px;
+  padding: 1rem 1.2rem;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s, box-shadow 0.2s;
+  flex: 1 1 calc(300px - 1rem); /* responsive card width */
+  min-width: 280px;
+}
+
+.project-item:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.2);
+}
+
+.project-name {
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin-bottom: 0.4rem;
+}
+
+.project-status {
+  font-weight: bold;
+  padding: 0.25rem 0.5rem;
+  border-radius: 6px;
+  display: inline-block;
+  margin-bottom: 0.5rem;
+}
+
+/* Status colors */
+.project-status.pending {
+  background-color: #fef3c7;
+  color: #b45309;
+}
+
+.project-status.in_progress {
+  background-color: #dbeafe;
+  color: #1d4ed8;
+}
+
+.project-status.completed {
+  background-color: #dcfce7;
+  color: #15803d;
+}
+
+.project-description {
+  color: #555;
+  font-size: 0.95rem;
+  line-height: 1.3;
 }
