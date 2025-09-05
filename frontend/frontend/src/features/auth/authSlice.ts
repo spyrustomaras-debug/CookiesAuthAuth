@@ -1,5 +1,4 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import axios from "axios";
 import axiosInstance from "../../api/axios";
 
 interface User {
@@ -15,8 +14,6 @@ interface AuthState {
   error: string | null;
   loggedIn: boolean;
   role: string | null;
-  accessToken: string | null;
-  refreshToken: string | null;
 }
 
 const initialState: AuthState = {
@@ -25,8 +22,6 @@ const initialState: AuthState = {
   error: null,
   loggedIn: false,
   role: null,
-  accessToken: null,
-  refreshToken: null,
 };
 
 // Login thunk
@@ -36,12 +31,11 @@ export const login = createAsyncThunk(
     try {
       const response = await axiosInstance.post("/api/login/", credentials);
 
-
-      // store tokens in localStorage (optional)
       localStorage.setItem("accessToken", response.data.access);
       localStorage.setItem("refreshToken", response.data.refresh);
-      console.log(response.data)
-      return response.data; // includes user info and tokens
+
+      const { access, refresh, ...userInfo } = response.data;
+      return userInfo;
     } catch (error: any) {
       return thunkAPI.rejectWithValue(error.response?.data || "Login failed");
     }
@@ -56,12 +50,28 @@ const authSlice = createSlice({
       state.user = null;
       state.role = null;
       state.loggedIn = false;
-      state.accessToken = null;
-      state.refreshToken = null;
       state.error = null;
 
       localStorage.removeItem("accessToken");
       localStorage.removeItem("refreshToken");
+    },
+    restoreLogin: (state) => {
+      // Attempt to restore login from localStorage
+      const access = localStorage.getItem("accessToken");
+      const refresh = localStorage.getItem("refreshToken");
+      const user = localStorage.getItem("user");
+
+      if (access && refresh && user) {
+        state.user = JSON.parse(user);
+        state.loggedIn = true;
+        state.role = JSON.parse(user).role;
+      }
+    },
+    setUserInLocalStorage: (state, action) => {
+      state.user = action.payload;
+      state.loggedIn = true;
+      state.role = action.payload.role;
+      localStorage.setItem("user", JSON.stringify(action.payload));
     },
   },
   extraReducers: (builder) => {
@@ -72,12 +82,10 @@ const authSlice = createSlice({
       })
       .addCase(login.fulfilled, (state, action) => {
         state.loading = false;
-        console.log("action.payload", action.payload)
-        const { access, refresh, ...userInfo } = action.payload;
-        state.user = userInfo as User;
+        state.user = action.payload;
         state.loggedIn = true;
-        state.accessToken = access;
-        state.refreshToken = refresh;
+        state.role = action.payload.role;
+        localStorage.setItem("user", JSON.stringify(action.payload));
       })
       .addCase(login.rejected, (state, action) => {
         state.loading = false;
@@ -85,11 +93,9 @@ const authSlice = createSlice({
         state.loggedIn = false;
         state.user = null;
         state.role = null;
-        state.accessToken = null;
-        state.refreshToken = null;
       });
   },
 });
 
-export const { logout } = authSlice.actions;
+export const { logout, restoreLogin, setUserInLocalStorage } = authSlice.actions;
 export default authSlice.reducer;
