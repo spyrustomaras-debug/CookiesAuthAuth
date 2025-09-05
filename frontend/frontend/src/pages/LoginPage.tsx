@@ -4,6 +4,7 @@ import { login } from "../features/auth/authSlice";
 import { useNavigate } from "react-router-dom";
 import "./LoginPage.css"; // 👈 import the CSS file here
 import { setError, clearError } from "../features/error/errorSlice";
+import useNotifications from "../hooks/useNotification";
 
 
 const LoginPage: React.FC = () => {
@@ -15,6 +16,7 @@ const LoginPage: React.FC = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [touched, setTouched] = useState({ username: false, password: false });
+  const { notify } = useNotifications();
 
   const handleSubmit = (e: React.FormEvent) => {
      e.preventDefault();
@@ -24,6 +26,7 @@ const LoginPage: React.FC = () => {
     }
     dispatch(clearError());
     dispatch(login({ username, password }));
+    notify(`Welcome ${username}`, "info")
   };
 
   useEffect(() => {

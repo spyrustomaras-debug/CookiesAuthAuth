@@ -3,6 +3,7 @@ import authReducer from "./features/auth/authSlice";
 import projectReducer from "./features/projects/projectSlice";
 import workerProjectReducer from "./features/projects/workerProjectSlice";
 import errorReducer from "./features/error/errorSlice";
+import notificationReducer from "./features/notifications/notificationSlice";
 
 export const store = configureStore({
   reducer: {
@@ -10,6 +11,7 @@ export const store = configureStore({
     projects: projectReducer,
     workerProjects: workerProjectReducer,
     error: errorReducer,
+    notification: notificationReducer,
   },
 });
 

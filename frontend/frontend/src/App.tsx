@@ -7,6 +7,10 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import * as Sentry from "@sentry/react";
 import ErrorFallback from "./components/ErrorFallback";
 import useIdleLogout from "./hooks/useIdleLogout";
+import useNotifications from "../src/hooks/useNotification";
+import Notifications from "./components/Notifications";
+import Loader from "./components/Loader";
+
 
 const LoginPage = React.lazy(() => import("./pages/LoginPage"));
 const CrashTest = React.lazy(() => import("./pages/CrashTest"));
@@ -17,15 +21,17 @@ const AdminDashboard = React.lazy(() => import("./components/AdminDashboard"));
 const App: React.FC = () => {
   const dispatch = useAppDispatch();
   useIdleLogout(); // enable auto-logout
-
+  useNotifications();
   useEffect(() => {
     dispatch(restoreLogin()); // restore login on page load
   }, [dispatch]);
 
   return (
+    
     <Sentry.ErrorBoundary fallback={<ErrorFallback />}>
+
       <Router>
-        <Suspense fallback={<div>Loading...</div>}>
+        <Suspense fallback={<Loader/>}>
           <Routes>
 
             <Route path="/login" element={<LoginPage />} />

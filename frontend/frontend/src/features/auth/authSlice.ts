@@ -1,6 +1,8 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axiosInstance from "../../api/axios";
 import * as Sentry from "@sentry/react";
+import { addNotification } from "../notifications/notificationSlice";
+
 
 interface User {
   id: number;
@@ -36,6 +38,14 @@ export const login = createAsyncThunk(
       localStorage.setItem("refreshToken", response.data.refresh);
 
       const { access, refresh, ...userInfo } = response.data;
+
+      // Dispatch success notification
+      thunkAPI.dispatch(addNotification({
+        id: crypto.randomUUID(),
+        message: `Welcome back, ${userInfo.username}!`,
+        type: "info",
+        read: false,
+      }));
       return userInfo;
     } catch (error: any) {
       return thunkAPI.rejectWithValue(error.response?.data || "Login failed");
@@ -87,6 +97,7 @@ const authSlice = createSlice({
         state.loggedIn = true;
         state.role = action.payload.role;
         localStorage.setItem("user", JSON.stringify(action.payload));
+        
       })
       .addCase(login.rejected, (state, action) => {
         state.loading = false;
