@@ -10,6 +10,7 @@ import useIdleLogout from "./hooks/useIdleLogout";
 import useNotifications from "../src/hooks/useNotification";
 import Notifications from "./components/Notifications";
 import Loader from "./components/Loader";
+import NotFoundPage from "./pages/NotFoundPage";
 
 
 const LoginPage = React.lazy(() => import("./pages/LoginPage"));
@@ -51,7 +52,7 @@ const App: React.FC = () => {
                 </ProtectedRoute>
               }
             />
-            <Route path="*" element={<LoginPage />} />
+            <Route path="*" element={<NotFoundPage />} />
           </Routes>
         </Suspense>
       </Router>
