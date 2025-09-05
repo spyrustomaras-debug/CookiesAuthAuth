@@ -234,3 +234,104 @@
   opacity: 0.8;
 }
 
+/* Grid of project cards */
+.projects-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 20px; /* spacing between cards */
+  margin-bottom: 20px;
+}
+
+/* Individual project card */
+.project-card {
+  background-color: #fff;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.project-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+}
+
+.project-title {
+  font-size: 1.2rem;
+  margin-bottom: 10px;
+}
+
+.project-description {
+  margin: 10px 0;
+}
+
+.project-status {
+  font-weight: bold;
+}
+
+/* Status buttons */
+.status-btn {
+  margin-top: 10px;
+  padding: 6px 12px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background 0.2s ease;
+}
+
+.status-btn.in-progress {
+  background-color: #f5a623;
+  color: white;
+}
+
+.status-btn.completed {
+  background-color: #4caf50;
+  color: white;
+}
+
+.status-btn.pending {
+  background-color: #2196f3;
+  color: white;
+}
+
+.status-btn:hover {
+  opacity: 0.9;
+}
+
+/* Pagination styling */
+.pagination {
+  display: flex;
+  justify-content: center; /* center the buttons */
+  align-items: center;
+  gap: 8px; /* spacing between buttons */
+  margin-top: 20px;
+  flex-wrap: wrap; /* wrap if too many pages */
+}
+
+.page-btn {
+  padding: 6px 12px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  background-color: #fff;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+.page-btn:hover {
+  background-color: #f0f0f0;
+}
+
+.page-btn.active {
+  background-color: #2196f3;
+  color: #fff;
+  border-color: #2196f3;
+}
+
+.page-btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+

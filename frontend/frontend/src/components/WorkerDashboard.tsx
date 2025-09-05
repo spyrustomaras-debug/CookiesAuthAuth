@@ -23,6 +23,8 @@ const WorkerDashboard: React.FC = () => {
   const [description, setDescription] = useState("");
   const [error, setError] = useState<string | null>(null);
 
+
+
   useEffect(() => {
     dispatch(fetchWorkerProjects());
   }, [dispatch]);
@@ -49,6 +51,25 @@ const WorkerDashboard: React.FC = () => {
     }
   };
 
+  // Pagination state
+const [currentPage, setCurrentPage] = useState(1);
+const projectsPerPage = 3; // show only 3 projects
+
+// Pagination calculations
+const indexOfLastProject = currentPage * projectsPerPage;
+const indexOfFirstProject = indexOfLastProject - projectsPerPage;
+const currentProjects = projects.slice(indexOfFirstProject, indexOfLastProject);
+const totalPages = Math.ceil(projects.length / projectsPerPage);
+
+// Calculate range of page numbers to show (max 3 at a time)
+const getPageNumbers = () => {
+  let start = Math.max(currentPage - 1, 1);
+  let end = Math.min(start + 2, totalPages);
+
+  if (end - start < 2) start = Math.max(end - 2, 1);
+
+  return Array.from({ length: end - start + 1 }, (_, i) => start + i);
+};
   return (
     <div className="dashboard-container">
       <header className="dashboard-header">
@@ -64,88 +85,117 @@ const WorkerDashboard: React.FC = () => {
             <h3 className="form-title">Create New Project</h3>
 
             <div className="form-group">
-                <label htmlFor="project-name">Project Name</label>
-                <input
+              <label htmlFor="project-name">Project Name</label>
+              <input
                 id="project-name"
                 type="text"
                 placeholder="Enter project name"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                />
+              />
             </div>
 
             <div className="form-group">
-                <label htmlFor="project-description">Project Description</label>
-                <textarea
+              <label htmlFor="project-description">Project Description</label>
+              <textarea
                 id="project-description"
                 placeholder="Enter project description"
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
                 rows={4}
-                />
+              />
             </div>
 
             {error && <p className="error-text">{error}</p>}
 
             <button type="submit" className="submit-btn">Create Project</button>
-        </form>
-
+          </form>
         </section>
 
-        {/* Existing Projects */}
+        {/* Existing Projects with Pagination */}
         <section className="worker-projects-section">
           <h2>Your Projects</h2>
           {loading ? (
             <p>Loading projects...</p>
-          ) : projects.length > 0 ? (
-            <div className="projects-grid">
-              {projects.map((p) => (
-                <div key={p.id} className="project-card">
-                  <h3 className="project-title">{p.name}</h3>
-                  <p className="project-worker">
-                    <strong>Worker:</strong> {p.worker.username} ({p.worker.email})
-                  </p>
-                  <p className="project-description">
-                    <strong>Description:</strong> {p.description}
-                  </p>
-                  <p className={`project-status ${p.status.toLowerCase()}`}>
-                    <strong>Status:</strong> {p.status}
-                  </p>
-                   {p.status === "COMPLETED" && (
-                    <button
+          ) : currentProjects.length > 0 ? (
+            <>
+              <div className="projects-grid">
+                {currentProjects.map((p) => (
+                  <div key={p.id} className="project-card">
+                    <h3 className="project-title">{p.name}</h3>
+                    <p className="project-worker">
+                      <strong>Worker:</strong> {p.worker.username} ({p.worker.email})
+                    </p>
+                    <p className="project-description">
+                      <strong>Description:</strong> {p.description}
+                    </p>
+                    <p className={`project-status ${p.status.toLowerCase()}`}>
+                      <strong>Status:</strong> {p.status}
+                    </p>
+
+                    {p.status === "COMPLETED" && (
+                      <button
                         className="status-btn completed"
                         onClick={() =>
-                        dispatch(updateProjectStatus({ projectId: p.id, status: "IN_PROGRESS" }))
+                          dispatch(updateProjectStatus({ projectId: p.id, status: "IN_PROGRESS" }))
                         }
-                    >
+                      >
                         Mark as In Progress
-                    </button>
+                      </button>
                     )}
-
                     {p.status === "IN_PROGRESS" && (
-                    <button
+                      <button
                         className="status-btn in-progress"
                         onClick={() =>
-                        dispatch(updateProjectStatus({ projectId: p.id, status: "COMPLETED" }))
+                          dispatch(updateProjectStatus({ projectId: p.id, status: "COMPLETED" }))
                         }
-                    >
+                      >
                         Mark as Completed
-                    </button>
+                      </button>
                     )}
-
                     {p.status === "PENDING" && (
-                    <button
+                      <button
                         className="status-btn pending"
                         onClick={() =>
-                        dispatch(updateProjectStatus({ projectId: p.id, status: "IN_PROGRESS" }))
+                          dispatch(updateProjectStatus({ projectId: p.id, status: "IN_PROGRESS" }))
                         }
-                    >
+                      >
                         Start Project
-                    </button>
+                      </button>
                     )}
-                </div>
-              ))}
-            </div>
+                  </div>
+                ))}
+              </div>
+
+              {/* Pagination Controls */}
+              <div className="pagination">
+                <button
+                  className="page-btn"
+                  disabled={currentPage === 1}
+                  onClick={() => setCurrentPage((prev) => prev - 1)}
+                >
+                  Prev
+                </button>
+
+                {getPageNumbers().map((page) => (
+                  <button
+                    key={page}
+                    className={`page-btn ${page === currentPage ? "active" : ""}`}
+                    onClick={() => setCurrentPage(page)}
+                  >
+                    {page}
+                  </button>
+                ))}
+
+                <button
+                  className="page-btn"
+                  disabled={currentPage === totalPages}
+                  onClick={() => setCurrentPage((prev) => prev + 1)}
+                >
+                  Next
+                </button>
+              </div>
+            </>
           ) : (
             <p>No projects assigned yet.</p>
           )}
